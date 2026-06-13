@@ -89,6 +89,12 @@ struct HomeView: View {
                             .environmentObject(progressStore)
                     }
                 }
+
+                Section {
+                    NavigationLink("Energy") {
+                        EnergyView()
+                    }
+                }
             }
             .navigationDestination(isPresented: $isPracticeActive) {
                 PracticeView(viewModel: viewModel)
