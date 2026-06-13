@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct interviewTrainerApp: App {
+    @StateObject private var progressStore = ProgressStore()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
+                .environmentObject(progressStore)
         }
     }
 }
