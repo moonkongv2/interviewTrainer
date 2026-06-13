@@ -23,6 +23,10 @@ build/
 interviewTrainer/EnergyImages/*
 !interviewTrainer/EnergyImages/.gitkeep
 
+# Local question data
+interviewTrainer/questions.json
+interviewTrainer/questions_sample.json
+
 # Editor swap files
 *.swp
 *.swo
