@@ -11,6 +11,7 @@ struct HomeView: View {
     @EnvironmentObject private var progressStore: ProgressStore
     @StateObject private var viewModel = PracticeViewModel()
     @State private var isPracticeActive = false
+    @State private var isCheerAlertVisible = false
 
     private var selectedCategoryQuestionCount: Int {
         questionsInSelectedCategory.count
@@ -40,6 +41,9 @@ struct HomeView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.vertical, 8)
+                        .onTapGesture(count: 3) {
+                            isCheerAlertVisible = true
+                        }
 
                     LabeledContent("Total Questions", value: "\(viewModel.allQuestions.count)")
                     LabeledContent("Weak Questions", value: "\(weakQuestionCount)")
@@ -99,6 +103,11 @@ struct HomeView: View {
             .navigationDestination(isPresented: $isPracticeActive) {
                 PracticeView(viewModel: viewModel)
                     .environmentObject(progressStore)
+            }
+            .alert("김지혜 화이팅❤️", isPresented: $isCheerAlertVisible) {
+                Button("확인", role: .cancel) {}
+            } message: {
+                Text("❤️❤️❤️이쁜 김지혜 짱짱🙌❤️❤️❤️")
             }
         }
     }

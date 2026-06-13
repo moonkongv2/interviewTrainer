@@ -71,7 +71,8 @@ private enum EnergyImageLoader {
     }
 
     private static func isEnergyImageURL(_ url: URL) -> Bool {
-        !url.lastPathComponent.hasPrefix("AppIcon")
+        let fileName = url.deletingPathExtension().lastPathComponent
+        return !fileName.hasPrefix("AppIcon") && fileName != "app_icon"
     }
 }
 
