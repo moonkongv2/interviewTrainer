@@ -37,11 +37,23 @@ struct PracticeView: View {
     }
 
     private var emptyStateMessage: String {
-        if viewModel.filteredQuestions(progressStore: progressStore).isEmpty {
-            return "No questions match this condition."
+        if viewModel.allQuestions.isEmpty {
+            return "No questions are available yet. Please check that questions.json is included in the app."
         }
 
-        return "Tap Next Question to continue."
+        if viewModel.weakOnlyMode && progressStore.weakQuestionIds.isEmpty {
+            return "No weak questions yet. Mark questions for review during practice or from the question list."
+        }
+
+        if viewModel.filteredQuestions(progressStore: progressStore).isEmpty {
+            if viewModel.weakOnlyMode {
+                return "No weak questions match the selected category."
+            }
+
+            return "No questions match the selected category."
+        }
+
+        return "No questions match this condition."
     }
 
     private var actionButtons: some View {
@@ -79,7 +91,7 @@ struct PracticeView: View {
                     Spacer()
 
                     if progressStore.isWeak(question) {
-                        Text("Review Again")
+                        Text("Saved for Review")
                             .font(.caption)
                             .fontWeight(.semibold)
                             .padding(.horizontal, 10)
@@ -93,6 +105,7 @@ struct PracticeView: View {
                 Text(question.question)
                     .font(.title3)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Divider()
 
@@ -104,6 +117,7 @@ struct PracticeView: View {
                         Text(question.answer)
                             .font(.body)
                             .foregroundStyle(.primary)
+                            .fixedSize(horizontal: false, vertical: true)
                     } else {
                         Text("Answer is hidden.")
                             .font(.body)

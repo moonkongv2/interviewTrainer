@@ -12,6 +12,14 @@ struct HomeView: View {
     @StateObject private var viewModel = PracticeViewModel()
     @State private var isPracticeActive = false
 
+    private var filteredQuestionCount: Int {
+        viewModel.filteredQuestions(progressStore: progressStore).count
+    }
+
+    private var weakQuestionCount: Int {
+        progressStore.weakQuestionIds.count
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -22,7 +30,13 @@ struct HomeView: View {
                         .padding(.vertical, 8)
 
                     LabeledContent("Total Questions", value: "\(viewModel.allQuestions.count)")
-                    LabeledContent("Weak Questions", value: "\(progressStore.weakQuestionIds.count)")
+                    LabeledContent("Weak Questions", value: "\(weakQuestionCount)")
+
+                    if viewModel.allQuestions.isEmpty {
+                        Text("No questions are available yet. Add questions.json to the app bundle and try again.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Section("Practice Settings") {
@@ -34,16 +48,23 @@ struct HomeView: View {
                 }
 
                 Section {
-                    Button("Start Random Practice") {
+                    Button("Start Practice") {
                         startPractice(weakOnlyMode: false)
                     }
+                    .disabled(filteredQuestionCount == 0)
 
                     Button("Practice Weak Questions") {
                         startPractice(weakOnlyMode: true)
                     }
-                    .disabled(progressStore.weakQuestionIds.isEmpty)
+                    .disabled(weakQuestionCount == 0)
 
-                    if progressStore.weakQuestionIds.isEmpty {
+                    if filteredQuestionCount == 0 && !viewModel.allQuestions.isEmpty {
+                        Text("No questions match the selected category.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if weakQuestionCount == 0 {
                         Text("Mark questions as weak during practice to review them later.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)

@@ -44,7 +44,7 @@ struct QuestionListView: View {
                     ContentUnavailableView(
                         "No Questions",
                         systemImage: "magnifyingglass",
-                        description: Text("No questions match this condition.")
+                        description: Text(emptyStateMessage)
                     )
                 } else {
                     ForEach(filteredQuestions) { question in
@@ -67,6 +67,14 @@ struct QuestionListView: View {
             }
         }
     }
+
+    private var emptyStateMessage: String {
+        if questions.isEmpty {
+            return "No questions are available yet. Please check questions.json."
+        }
+
+        return "No questions match this condition."
+    }
 }
 
 private struct QuestionRow: View {
@@ -84,6 +92,7 @@ private struct QuestionRow: View {
                 Text(question.question)
                     .font(.body)
                     .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             Spacer()
@@ -113,10 +122,12 @@ private struct QuestionDetailView: View {
             Section("Question") {
                 Text(question.question)
                     .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             Section("Answer") {
                 Text(question.answer)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             Section("Tags") {
