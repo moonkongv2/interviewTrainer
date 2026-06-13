@@ -63,11 +63,15 @@ private enum EnergyImageLoader {
             bundle.urls(forResourcesWithExtension: fileExtension, subdirectory: nil) ?? []
         }
 
-        let urls = folderURLs.isEmpty ? rootURLs : folderURLs
+        let urls = folderURLs.isEmpty ? rootURLs.filter(isEnergyImageURL) : folderURLs
 
         return urls.sorted {
             $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending
         }
+    }
+
+    private static func isEnergyImageURL(_ url: URL) -> Bool {
+        !url.lastPathComponent.hasPrefix("AppIcon")
     }
 }
 
