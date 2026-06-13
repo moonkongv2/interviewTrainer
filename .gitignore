@@ -19,6 +19,10 @@ build/
 *.dSYM
 *.dSYM.zip
 
+# Local energy photos
+interviewTrainer/EnergyImages/*
+!interviewTrainer/EnergyImages/.gitkeep
+
 # Editor swap files
 *.swp
 *.swo
