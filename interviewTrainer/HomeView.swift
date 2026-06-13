@@ -49,6 +49,13 @@ struct HomeView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+
+                Section {
+                    NavigationLink("Question List") {
+                        QuestionListView(questions: viewModel.allQuestions)
+                            .environmentObject(progressStore)
+                    }
+                }
             }
             .navigationDestination(isPresented: $isPracticeActive) {
                 PracticeView(viewModel: viewModel)
