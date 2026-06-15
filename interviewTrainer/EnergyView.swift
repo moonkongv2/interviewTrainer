@@ -55,24 +55,13 @@ private enum EnergyImageLoader {
     private static let supportedExtensions = ["HEIC", "heic", "JPG", "jpg", "JPEG", "jpeg", "PNG", "png"]
 
     static func loadImageURLs(bundle: Bundle = .main) -> [URL] {
-        let folderURLs = supportedExtensions.flatMap { fileExtension in
+        let urls = supportedExtensions.flatMap { fileExtension in
             bundle.urls(forResourcesWithExtension: fileExtension, subdirectory: folderName) ?? []
         }
-
-        let rootURLs = supportedExtensions.flatMap { fileExtension in
-            bundle.urls(forResourcesWithExtension: fileExtension, subdirectory: nil) ?? []
-        }
-
-        let urls = folderURLs.isEmpty ? rootURLs.filter(isEnergyImageURL) : folderURLs
 
         return urls.sorted {
             $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending
         }
-    }
-
-    private static func isEnergyImageURL(_ url: URL) -> Bool {
-        let fileName = url.deletingPathExtension().lastPathComponent
-        return !fileName.hasPrefix("AppIcon") && fileName != "app_icon"
     }
 }
 
