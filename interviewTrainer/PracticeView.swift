@@ -66,25 +66,45 @@ struct PracticeView: View {
     }
 
     private var actionButtons: some View {
-        VStack(spacing: 10) {
-            Button("I Know This") {
+        VStack(spacing: 12) {
+            Button {
                 viewModel.markKnown(progressStore: progressStore)
+            } label: {
+                PracticeActionButtonLabel(
+                    title: "I Know This",
+                    systemImage: "checkmark.circle.fill",
+                    color: .blue,
+                    isProminent: true
+                )
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.plain)
 
-            Button("Review Again") {
-                viewModel.markWeak(progressStore: progressStore)
-            }
-            .buttonStyle(.bordered)
+            HStack(spacing: 12) {
+                Button {
+                    viewModel.markWeak(progressStore: progressStore)
+                } label: {
+                    PracticeActionButtonLabel(
+                        title: "Review Again",
+                        systemImage: "bookmark.fill",
+                        color: .orange
+                    )
+                }
+                .buttonStyle(.plain)
 
-            Button("Next Question") {
-                viewModel.nextRandomQuestion(progressStore: progressStore)
+                Button {
+                    viewModel.nextRandomQuestion(progressStore: progressStore)
+                } label: {
+                    PracticeActionButtonLabel(
+                        title: "Next Question",
+                        systemImage: "arrow.right.circle.fill",
+                        color: .indigo
+                    )
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.bordered)
         }
         .frame(maxWidth: .infinity)
-        .controlSize(.large)
-        .padding()
+        .padding(AppStyle.screenPadding)
         .background(.bar)
     }
 
@@ -93,10 +113,14 @@ struct PracticeView: View {
             VStack(alignment: .leading, spacing: AppStyle.sectionSpacing) {
                 VStack(alignment: .leading, spacing: AppStyle.cardSpacing) {
                     HStack {
-                        Text(question.category)
+                        Label(question.category, systemImage: "folder.fill")
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundStyle(.secondary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(AppStyle.rowBackground)
+                            .clipShape(Capsule())
                             .onTapGesture(count: 3) {
                                 showCategoryEasterEgg()
                             }
@@ -104,7 +128,7 @@ struct PracticeView: View {
                         Spacer()
 
                         if progressStore.isWeak(question) {
-                            Text("Saved for Review")
+                            Label("Saved", systemImage: "bookmark.fill")
                                 .font(.caption)
                                 .fontWeight(.semibold)
                                 .padding(.horizontal, 10)
@@ -123,8 +147,15 @@ struct PracticeView: View {
                 .appCard()
 
                 VStack(alignment: .leading, spacing: AppStyle.cardSpacing) {
-                    Text("Answer")
-                        .font(.headline)
+                    HStack {
+                        Text("Answer")
+                            .font(.headline)
+
+                        Spacer()
+
+                        Image(systemName: viewModel.isAnswerVisible ? "eye.fill" : "eye.slash.fill")
+                            .foregroundStyle(.secondary)
+                    }
 
                     if viewModel.isAnswerVisible {
                         Text(question.answer)
@@ -132,18 +163,37 @@ struct PracticeView: View {
                             .foregroundStyle(.primary)
                             .fixedSize(horizontal: false, vertical: true)
                     } else {
-                        Text("Answer is hidden.")
-                            .font(.body)
-                            .foregroundStyle(.secondary)
+                        HStack(spacing: 10) {
+                            Image(systemName: "lock.fill")
+                                .foregroundStyle(.secondary)
+
+                            Text("Answer is hidden.")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+
+                            Spacer()
+                        }
+                        .padding(14)
+                        .background(AppStyle.rowBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: AppStyle.rowCornerRadius, style: .continuous))
                     }
 
-                    Button(viewModel.isAnswerVisible ? "Hide Answer" : "Show Answer") {
+                    Button {
                         if viewModel.isAnswerVisible {
                             viewModel.isAnswerVisible = false
                         } else {
                             viewModel.showAnswer()
                         }
+                    } label: {
+                        Label(
+                            viewModel.isAnswerVisible ? "Hide Answer" : "Show Answer",
+                            systemImage: viewModel.isAnswerVisible ? "eye.slash.fill" : "eye.fill"
+                        )
+                        .font(.body)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity, minHeight: 44)
                     }
+                    .buttonStyle(.borderedProminent)
                 }
                 .appCard()
             }
@@ -170,6 +220,25 @@ struct PracticeView: View {
         categoryEasterEggAlertTitle = message.title
         categoryEasterEggAlertMessage = message.message
         isCategoryEasterEggAlertVisible = true
+    }
+}
+
+private struct PracticeActionButtonLabel: View {
+    let title: String
+    let systemImage: String
+    let color: Color
+    var isProminent = false
+
+    var body: some View {
+        Label(title, systemImage: systemImage)
+            .font(.body)
+            .fontWeight(.semibold)
+            .lineLimit(1)
+            .minimumScaleFactor(0.85)
+            .frame(maxWidth: .infinity, minHeight: isProminent ? 52 : 48)
+            .foregroundStyle(isProminent ? .white : color)
+            .background(isProminent ? color : color.opacity(0.12))
+            .clipShape(RoundedRectangle(cornerRadius: AppStyle.rowCornerRadius, style: .continuous))
     }
 }
 
