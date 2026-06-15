@@ -45,78 +45,19 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
-                    Text("지혜 외우기 노트>_<\n김지혜 화이팅❤️❤️❤️")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.vertical, 8)
-                        .onTapGesture(count: 3) {
-                            showEasterEgg(from: titleEasterEggMessages)
-                        }
-
-                    LabeledContent("Total Questions", value: "\(viewModel.allQuestions.count)")
-                        .onTapGesture(count: 3) {
-                            showEasterEgg(from: questionCountEasterEggMessages)
-                        }
-                    LabeledContent("Weak Questions", value: "\(weakQuestionCount)")
-                        .onTapGesture(count: 3) {
-                            showEasterEgg(from: questionCountEasterEggMessages)
-                        }
-
-                    if viewModel.allQuestions.isEmpty {
-                        Text("No questions are available yet. Add questions.json to the app bundle and try again.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    headerSection
+                    questionSummarySection
+                    practiceSettingsSection
+                    practiceActionsSection
+                    librarySection
                 }
-
-                Section("Practice Settings") {
-                    Picker("Category", selection: $viewModel.selectedCategory) {
-                        ForEach(viewModel.categories, id: \.self) { category in
-                            Text(category).tag(category)
-                        }
-                    }
-                }
-
-                Section {
-                    Button("Start Practice") {
-                        startPractice(weakOnlyMode: false)
-                    }
-                    .disabled(selectedCategoryQuestionCount == 0)
-
-                    Button("Practice Weak Questions") {
-                        startPractice(weakOnlyMode: true)
-                    }
-                    .disabled(weakQuestionCountInSelectedCategory == 0)
-
-                    if selectedCategoryQuestionCount == 0 && !viewModel.allQuestions.isEmpty {
-                        Text("No questions match the selected category.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Text(weakQuestionHintMessage)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .onTapGesture(count: 3) {
-                            showEasterEgg(from: weakHintEasterEggMessages)
-                        }
-                }
-
-                Section {
-                    NavigationLink("Question List") {
-                        QuestionListView(questions: viewModel.allQuestions)
-                            .environmentObject(progressStore)
-                    }
-                }
-
-                Section {
-                    NavigationLink("Energy") {
-                        EnergyView()
-                    }
-                }
+                .padding(20)
             }
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Home")
+            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $isPracticeActive) {
                 PracticeView(viewModel: viewModel)
                     .environmentObject(progressStore)
@@ -127,6 +68,159 @@ struct HomeView: View {
                 Text(easterEggAlertMessage)
             }
         }
+    }
+
+    private var headerSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("지혜 외우기 노트>_<\n김지혜 화이팅❤️❤️❤️")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .lineSpacing(3)
+                .fixedSize(horizontal: false, vertical: true)
+                .onTapGesture(count: 3) {
+                    showEasterEgg(from: titleEasterEggMessages)
+                }
+
+            Text("오늘 볼 문제를 고르고 바로 연습을 시작하세요.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 8)
+    }
+
+    private var questionSummarySection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                HomeStatCard(
+                    title: "Total Questions",
+                    value: "\(viewModel.allQuestions.count)",
+                    systemImage: "square.stack.3d.up"
+                )
+                .onTapGesture(count: 3) {
+                    showEasterEgg(from: questionCountEasterEggMessages)
+                }
+
+                HomeStatCard(
+                    title: "Weak Questions",
+                    value: "\(weakQuestionCount)",
+                    systemImage: "bookmark.fill"
+                )
+                .onTapGesture(count: 3) {
+                    showEasterEgg(from: questionCountEasterEggMessages)
+                }
+            }
+
+            if viewModel.allQuestions.isEmpty {
+                Text("No questions are available yet. Add questions.json to the app bundle and try again.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 2)
+            }
+        }
+    }
+
+    private var practiceSettingsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Practice Settings")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                Image(systemName: "line.3.horizontal.decrease.circle")
+                    .font(.title3)
+                    .foregroundStyle(.blue)
+
+                Picker("Category", selection: $viewModel.selectedCategory) {
+                    ForEach(viewModel.categories, id: \.self) { category in
+                        Text(category).tag(category)
+                    }
+                }
+                .pickerStyle(.menu)
+            }
+        }
+        .homeCard()
+    }
+
+    private var practiceActionsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Practice")
+                .font(.headline)
+
+            Button {
+                startPractice(weakOnlyMode: false)
+            } label: {
+                HomeActionLabel(
+                    title: "Start Practice",
+                    subtitle: "\(selectedCategoryQuestionCount) questions available",
+                    systemImage: "play.fill",
+                    color: .blue
+                )
+            }
+            .buttonStyle(.plain)
+            .disabled(selectedCategoryQuestionCount == 0)
+            .opacity(selectedCategoryQuestionCount == 0 ? 0.45 : 1)
+
+            Button {
+                startPractice(weakOnlyMode: true)
+            } label: {
+                HomeActionLabel(
+                    title: "Practice Weak Questions",
+                    subtitle: "\(weakQuestionCountInSelectedCategory) saved for review",
+                    systemImage: "bookmark.fill",
+                    color: .orange
+                )
+            }
+            .buttonStyle(.plain)
+            .disabled(weakQuestionCountInSelectedCategory == 0)
+            .opacity(weakQuestionCountInSelectedCategory == 0 ? 0.45 : 1)
+
+            if selectedCategoryQuestionCount == 0 && !viewModel.allQuestions.isEmpty {
+                Text("No questions match the selected category.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Text(weakQuestionHintMessage)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .onTapGesture(count: 3) {
+                    showEasterEgg(from: weakHintEasterEggMessages)
+                }
+        }
+        .homeCard()
+    }
+
+    private var librarySection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Library")
+                .font(.headline)
+
+            NavigationLink {
+                QuestionListView(questions: viewModel.allQuestions)
+                    .environmentObject(progressStore)
+            } label: {
+                HomeActionLabel(
+                    title: "Question List",
+                    subtitle: "Browse questions and answers",
+                    systemImage: "list.bullet.rectangle",
+                    color: .indigo
+                )
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink {
+                EnergyView()
+            } label: {
+                HomeActionLabel(
+                    title: "Energy",
+                    subtitle: "Open motivation images",
+                    systemImage: "sparkles",
+                    color: .pink
+                )
+            }
+            .buttonStyle(.plain)
+        }
+        .homeCard()
     }
 
     private var titleEasterEggMessages: [(title: String, message: String)] {
@@ -164,6 +258,98 @@ struct HomeView: View {
         easterEggAlertTitle = message.title
         easterEggAlertMessage = message.message
         isEasterEggAlertVisible = true
+    }
+}
+
+private struct HomeStatCard: View {
+    let title: String
+    let value: String
+    let systemImage: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Image(systemName: systemImage)
+                .font(.title3)
+                .foregroundStyle(.blue)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(value)
+                    .font(.title2)
+                    .fontWeight(.bold)
+
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(.background)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color(.separator).opacity(0.2), lineWidth: 1)
+        }
+    }
+}
+
+private struct HomeActionLabel: View {
+    let title: String
+    let subtitle: String
+    let systemImage: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(color.opacity(0.14))
+
+                Image(systemName: systemImage)
+                    .font(.headline)
+                    .foregroundStyle(color)
+            }
+            .frame(width: 44, height: 44)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.body)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
+
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(.tertiary)
+        }
+        .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
+        .padding(12)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+}
+
+private extension View {
+    func homeCard() -> some View {
+        self
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.background)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(Color(.separator).opacity(0.18), lineWidth: 1)
+            }
     }
 }
 
