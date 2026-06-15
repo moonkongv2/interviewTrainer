@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BCF00D022FDF000000000001 /* EnergyImages in Resources */ = {isa = PBXBuildFile; fileRef = BCF00D012FDF000000000001 /* EnergyImages */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		BC3248BE2FDD97F1009E3A40 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		BC3248B02FDD97F0009E3A40 /* interviewTrainer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = interviewTrainer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC3248BD2FDD97F1009E3A40 /* interviewTrainerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = interviewTrainerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC3248C72FDD97F1009E3A40 /* interviewTrainerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = interviewTrainerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF00D012FDF000000000001 /* EnergyImages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = EnergyImages; path = interviewTrainer/EnergyImages; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +84,7 @@
 				BC3248C02FDD97F1009E3A40 /* interviewTrainerTests */,
 				BC3248CA2FDD97F1009E3A40 /* interviewTrainerUITests */,
 				BC3248B12FDD97F0009E3A40 /* Products */,
+				BC382AAF2FDFA53F00B4BBAB /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -90,6 +96,14 @@
 				BC3248C72FDD97F1009E3A40 /* interviewTrainerUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BC382AAF2FDFA53F00B4BBAB /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				BCF00D012FDF000000000001 /* EnergyImages */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +226,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCF00D022FDF000000000001 /* EnergyImages in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
