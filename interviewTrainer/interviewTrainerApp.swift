@@ -45,11 +45,17 @@ private struct SplashRootView: View {
 
 private struct SplashImageView: View {
     private var splashImage: UIImage? {
-        guard let url = Bundle.main.url(forResource: "splash_image", withExtension: "png") else {
-            return nil
+        let imageNames = UIDevice.current.userInterfaceIdiom == .pad
+            ? ["splash_image_ipad", "splash_image"]
+            : ["splash_image"]
+
+        for imageName in imageNames {
+            if let url = Bundle.main.url(forResource: imageName, withExtension: "png") {
+                return UIImage(contentsOfFile: url.path)
+            }
         }
 
-        return UIImage(contentsOfFile: url.path)
+        return nil
     }
 
     var body: some View {
