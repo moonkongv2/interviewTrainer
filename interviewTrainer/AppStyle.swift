@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+enum AppFeatureFlags {
+    static let isEasterEggEnabled = true
+}
+
 enum AppStyle {
     static let screenPadding: CGFloat = 20
     static let sectionSpacing: CGFloat = 20

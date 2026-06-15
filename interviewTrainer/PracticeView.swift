@@ -216,6 +216,10 @@ struct PracticeView: View {
     }
 
     private func showCategoryEasterEgg() {
+        guard AppFeatureFlags.isEasterEggEnabled else {
+            return
+        }
+
         let message = categoryEasterEggMessages.randomElement() ?? categoryEasterEggMessages[0]
         categoryEasterEggAlertTitle = message.title
         categoryEasterEggAlertMessage = message.message

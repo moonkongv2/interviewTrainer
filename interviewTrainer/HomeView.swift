@@ -257,6 +257,10 @@ struct HomeView: View {
     }
 
     private func showEasterEgg(from messages: [(title: String, message: String)]) {
+        guard AppFeatureFlags.isEasterEggEnabled else {
+            return
+        }
+
         let message = messages.randomElement() ?? messages[0]
         easterEggAlertTitle = message.title
         easterEggAlertMessage = message.message
