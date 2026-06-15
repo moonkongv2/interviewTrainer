@@ -10,6 +10,9 @@ import SwiftUI
 struct PracticeView: View {
     @ObservedObject var viewModel: PracticeViewModel
     @EnvironmentObject private var progressStore: ProgressStore
+    @State private var isCategoryEasterEggAlertVisible = false
+    @State private var categoryEasterEggAlertTitle = ""
+    @State private var categoryEasterEggAlertMessage = ""
 
     var body: some View {
         Group {
@@ -33,6 +36,11 @@ struct PracticeView: View {
             if viewModel.currentQuestion == nil {
                 viewModel.nextRandomQuestion(progressStore: progressStore)
             }
+        }
+        .alert(categoryEasterEggAlertTitle, isPresented: $isCategoryEasterEggAlertVisible) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(categoryEasterEggAlertMessage)
         }
     }
 
@@ -87,6 +95,9 @@ struct PracticeView: View {
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
+                        .onTapGesture(count: 3) {
+                            showCategoryEasterEgg()
+                        }
 
                     Spacer()
 
@@ -137,6 +148,24 @@ struct PracticeView: View {
             .padding()
             .padding(.bottom, 180)
         }
+    }
+
+    private var categoryEasterEggMessages: [(title: String, message: String)] {
+        [
+            ("💘최고미녀 김지혜💕", "너무 이쁜 김지혜😍"),
+            ("💝사랑하는 김지혜💝", "조녜 김지혜💝"),
+            ("누가 제일 이쁘다고?", "💓김지혜라고💓"),
+            ("세상 제일 이쁜 여자는?", "💖김.지.혜💖"),
+            ("김지혜 사랑해♥️", "💙💙💙세젤예 김지혜 뽀뽀 쪽😘💙💙"),
+            ("김지혜가 짱이야❣️❣️❣️", "🌟🌟🌟김지혜가 짱이지🌟🌟🌟")
+        ]
+    }
+
+    private func showCategoryEasterEgg() {
+        let message = categoryEasterEggMessages.randomElement() ?? categoryEasterEggMessages[0]
+        categoryEasterEggAlertTitle = message.title
+        categoryEasterEggAlertMessage = message.message
+        isCategoryEasterEggAlertVisible = true
     }
 }
 
