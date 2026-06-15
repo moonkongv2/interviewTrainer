@@ -72,7 +72,7 @@ struct HomeView: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("지혜 외우기 노트>_<\n김지혜 화이팅❤️❤️❤️")
+            Text(AppFeatureFlags.isEasterEggEnabled ? "지혜로운 암기 노트>_<\n김지혜 화이팅❤️❤️❤️" : "지혜로운 암기 노트😎\n합격하세요🍀🍀🍀")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .lineSpacing(3)
@@ -81,9 +81,9 @@ struct HomeView: View {
                     showEasterEgg(from: titleEasterEggMessages)
                 }
 
-            Text("오늘 볼 문제를 고르고 바로 연습을 시작하세요.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+//            Text("오늘 볼 문제를 고르고 바로 연습을 시작하세요.")
+//                .font(.subheadline)
+//                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 8)
