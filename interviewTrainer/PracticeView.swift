@@ -27,6 +27,7 @@ struct PracticeView: View {
             }
         }
         .navigationTitle("Practice")
+        .background(AppStyle.screenBackground)
         .safeAreaInset(edge: .bottom) {
             if viewModel.currentQuestion != nil {
                 actionButtons
@@ -89,38 +90,39 @@ struct PracticeView: View {
 
     private func questionContent(_ question: Question) -> some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                HStack {
-                    Text(question.category)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
-                        .onTapGesture(count: 3) {
-                            showCategoryEasterEgg()
-                        }
-
-                    Spacer()
-
-                    if progressStore.isWeak(question) {
-                        Text("Saved for Review")
-                            .font(.caption)
+            VStack(alignment: .leading, spacing: AppStyle.sectionSpacing) {
+                VStack(alignment: .leading, spacing: AppStyle.cardSpacing) {
+                    HStack {
+                        Text(question.category)
+                            .font(.subheadline)
                             .fontWeight(.semibold)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(.yellow.opacity(0.2))
-                            .foregroundStyle(.orange)
-                            .clipShape(Capsule())
+                            .foregroundStyle(.secondary)
+                            .onTapGesture(count: 3) {
+                                showCategoryEasterEgg()
+                            }
+
+                        Spacer()
+
+                        if progressStore.isWeak(question) {
+                            Text("Saved for Review")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(.yellow.opacity(0.2))
+                                .foregroundStyle(.orange)
+                                .clipShape(Capsule())
+                        }
                     }
+
+                    Text(question.question)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                .appCard()
 
-                Text(question.question)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Divider()
-
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: AppStyle.cardSpacing) {
                     Text("Answer")
                         .font(.headline)
 
@@ -143,11 +145,13 @@ struct PracticeView: View {
                         }
                     }
                 }
+                .appCard()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
+            .padding(AppStyle.screenPadding)
             .padding(.bottom, 180)
         }
+        .background(AppStyle.screenBackground)
     }
 
     private var categoryEasterEggMessages: [(title: String, message: String)] {

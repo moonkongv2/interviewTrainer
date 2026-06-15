@@ -46,16 +46,16 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: AppStyle.sectionSpacing) {
                     headerSection
                     questionSummarySection
                     practiceSettingsSection
                     practiceActionsSection
                     librarySection
                 }
-                .padding(20)
+                .padding(AppStyle.screenPadding)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(AppStyle.screenBackground)
             .navigationTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $isPracticeActive) {
@@ -92,7 +92,7 @@ struct HomeView: View {
     private var questionSummarySection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
-                HomeStatCard(
+                AppStatCard(
                     title: "Total Questions",
                     value: "\(viewModel.allQuestions.count)",
                     systemImage: "square.stack.3d.up"
@@ -101,10 +101,11 @@ struct HomeView: View {
                     showEasterEgg(from: questionCountEasterEggMessages)
                 }
 
-                HomeStatCard(
+                AppStatCard(
                     title: "Weak Questions",
                     value: "\(weakQuestionCount)",
-                    systemImage: "bookmark.fill"
+                    systemImage: "bookmark.fill",
+                    color: .orange
                 )
                 .onTapGesture(count: 3) {
                     showEasterEgg(from: questionCountEasterEggMessages)
@@ -138,7 +139,7 @@ struct HomeView: View {
                 .pickerStyle(.menu)
             }
         }
-        .homeCard()
+        .appCard()
     }
 
     private var practiceActionsSection: some View {
@@ -149,11 +150,12 @@ struct HomeView: View {
             Button {
                 startPractice(weakOnlyMode: false)
             } label: {
-                HomeActionLabel(
+                AppActionRow(
                     title: "Start Practice",
                     subtitle: "\(selectedCategoryQuestionCount) questions available",
                     systemImage: "play.fill",
-                    color: .blue
+                    color: .blue,
+                    showsChevron: false
                 )
             }
             .buttonStyle(.plain)
@@ -163,11 +165,12 @@ struct HomeView: View {
             Button {
                 startPractice(weakOnlyMode: true)
             } label: {
-                HomeActionLabel(
+                AppActionRow(
                     title: "Practice Weak Questions",
                     subtitle: "\(weakQuestionCountInSelectedCategory) saved for review",
                     systemImage: "bookmark.fill",
-                    color: .orange
+                    color: .orange,
+                    showsChevron: false
                 )
             }
             .buttonStyle(.plain)
@@ -187,7 +190,7 @@ struct HomeView: View {
                     showEasterEgg(from: weakHintEasterEggMessages)
                 }
         }
-        .homeCard()
+        .appCard()
     }
 
     private var librarySection: some View {
@@ -199,7 +202,7 @@ struct HomeView: View {
                 QuestionListView(questions: viewModel.allQuestions)
                     .environmentObject(progressStore)
             } label: {
-                HomeActionLabel(
+                AppActionRow(
                     title: "Question List",
                     subtitle: "Browse questions and answers",
                     systemImage: "list.bullet.rectangle",
@@ -211,7 +214,7 @@ struct HomeView: View {
             NavigationLink {
                 EnergyView()
             } label: {
-                HomeActionLabel(
+                AppActionRow(
                     title: "Energy",
                     subtitle: "Open motivation images",
                     systemImage: "sparkles",
@@ -220,7 +223,7 @@ struct HomeView: View {
             }
             .buttonStyle(.plain)
         }
-        .homeCard()
+        .appCard()
     }
 
     private var titleEasterEggMessages: [(title: String, message: String)] {
@@ -258,98 +261,6 @@ struct HomeView: View {
         easterEggAlertTitle = message.title
         easterEggAlertMessage = message.message
         isEasterEggAlertVisible = true
-    }
-}
-
-private struct HomeStatCard: View {
-    let title: String
-    let value: String
-    let systemImage: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Image(systemName: systemImage)
-                .font(.title3)
-                .foregroundStyle(.blue)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(value)
-                    .font(.title2)
-                    .fontWeight(.bold)
-
-                Text(title)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(.background)
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(Color(.separator).opacity(0.2), lineWidth: 1)
-        }
-    }
-}
-
-private struct HomeActionLabel: View {
-    let title: String
-    let subtitle: String
-    let systemImage: String
-    let color: Color
-
-    var body: some View {
-        HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(color.opacity(0.14))
-
-                Image(systemName: systemImage)
-                    .font(.headline)
-                    .foregroundStyle(color)
-            }
-            .frame(width: 44, height: 44)
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.body)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
-
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
-
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(.tertiary)
-        }
-        .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
-        .padding(12)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-    }
-}
-
-private extension View {
-    func homeCard() -> some View {
-        self
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(Color(.separator).opacity(0.18), lineWidth: 1)
-            }
     }
 }
 
